@@ -1,0 +1,1597 @@
+{
+  "info": {
+    "_postman_id": "3417bebb-a4ea-41ca-8271-9027d61173fb",
+    "name": "spotify",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "50972323",
+    "_collection_link": "https://go.postman.co/collection/50972323-3417bebb-a4ea-41ca-8271-9027d61173fb?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "create access token",
+      "item": [
+        {
+          "name": "grant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let response = pm.response.json();\r",
+                  "\r",
+                  "pm.environment.set(\"access_token\", response.access_token);\r",
+                  "\r",
+                  "let expiryTime = new Date().getTime() + (response.expires_in * 1000);\r",
+                  "pm.environment.set(\"token_expiry\", expiryTime);\r",
+                  "\r",
+                  "pm.test(\"Access token generated\", function () {\r",
+                  "    pm.expect(response.access_token).to.exist;\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "password",
+                  "value": "{{client_secret}}",
+                  "type": "string"
+                },
+                {
+                  "key": "username",
+                  "value": "{{client_id}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "grant_type",
+                  "value": "authorization_code",
+                  "type": "text",
+                  "uuid": "ec1a61d3-b1ec-4b21-a99b-a5cbed16420c"
+                },
+                {
+                  "key": "code",
+                  "value": "\"Autorization code\"",
+                  "type": "text",
+                  "uuid": "07a78d12-9837-4d47-be6d-40835b0fa94b"
+                },
+                {
+                  "key": "redirect_uri",
+                  "value": "https://oauth.pstmn.io/v1/callback",
+                  "type": "text",
+                  "uuid": "0cd499d2-4330-4378-a070-01a4b4fec417"
+                }
+              ]
+            },
+            "url": {
+              "raw": "https://accounts.spotify.com/api/token",
+              "protocol": "https",
+              "host": [
+                "accounts",
+                "spotify",
+                "com"
+              ],
+              "path": [
+                "api",
+                "token"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "refresh token",
+      "item": [
+        {
+          "name": "refresh token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let response = pm.response.json();\r",
+                  "\r",
+                  "pm.environment.set(\"access_token\", response.access_token);\r",
+                  "\r",
+                  "let expiryTime = new Date().getTime() + (response.expires_in * 1000);\r",
+                  "pm.environment.set(\"token_expiry\", expiryTime);\r",
+                  "\r",
+                  "pm.test(\"Access token generated\", function () {\r",
+                  "    pm.expect(response.access_token).to.exist;\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "password",
+                  "value": "{{client_secret}}",
+                  "type": "string"
+                },
+                {
+                  "key": "username",
+                  "value": "{{client_id}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "grant_type",
+                  "value": "refresh_token",
+                  "type": "text",
+                  "uuid": "f34191ff-7968-4045-8179-8ba61b06c154"
+                },
+                {
+                  "key": "refresh_token",
+                  "value": "AQDBVujY__rNKnK8ymsCxpavZPfT9oOrefKcfYGwgCMW8tWChazaUIpguso_KjJZDIgoMJ3NOki8FLonlGHEVCnBU8iTZbn0YDtkStrUx0rvE8s8Sj020tVWcc3zB2NrOZQ",
+                  "type": "text",
+                  "uuid": "139895c8-51d2-4f2c-bc14-1ee64ac4d1c2"
+                }
+              ]
+            },
+            "url": {
+              "raw": "https://accounts.spotify.com/api/token",
+              "protocol": "https",
+              "host": [
+                "accounts",
+                "spotify",
+                "com"
+              ],
+              "path": [
+                "api",
+                "token"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "pre-setup",
+      "item": [
+        {
+          "name": "Get Current User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", () => {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"User object structure valid\", () => {\r",
+                  "    pm.expect(json).to.have.property(\"id\");\r",
+                  "    pm.expect(json.id).to.be.a(\"string\").and.not.empty;\r",
+                  "});\r",
+                  "\r",
+                  "pm.environment.set(\"user_id\", json.id);\r",
+                  "pm.environment.set(\"user_display_name\", json.display_name || \"\");\r",
+                  "\r",
+                  "// Hard stop if chain breaks\r",
+                  "if (!json.id) {\r",
+                  "    throw new Error(\"User ID not returned. Execution halted.\");\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Search tracks",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const queries = [\r",
+                  "    \"Believer\",\r",
+                  "    \"Numb\",\r",
+                  "    \"Levitating\",\r",
+                  "    \"Blinding Lights\",\r",
+                  "    \"Heat Waves\"\r",
+                  "];\r",
+                  "\r",
+                  "let randomQuery = queries[Math.floor(Math.random() * queries.length)];\r",
+                  "\r",
+                  "pm.environment.set(\"search_query\", randomQuery);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Search successful\", () => {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Tracks array returned\", () => {\r",
+                  "    pm.expect(json.tracks).to.exist;\r",
+                  "    pm.expect(json.tracks.items).to.be.an(\"array\").that.is.not.empty;\r",
+                  "});\r",
+                  "\r",
+                  "const items = json.tracks.items;\r",
+                  "\r",
+                  "// Defensive guard\r",
+                  "if (items.length < 3) {\r",
+                  "    throw new Error(\"Not enough tracks returned for chaining.\");\r",
+                  "}\r",
+                  "\r",
+                  "// Extract full objects\r",
+                  "const trackData = items.map(item => ({\r",
+                  "    id: item.id,\r",
+                  "    uri: item.uri,\r",
+                  "    name: item.name\r",
+                  "}));\r",
+                  "\r",
+                  "// Store structured data\r",
+                  "pm.environment.set(\"track_data\", JSON.stringify(trackData));\r",
+                  "\r",
+                  "// Store first 3 individually for deterministic testing\r",
+                  "pm.environment.set(\"track_1_uri\", trackData[0].uri);\r",
+                  "pm.environment.set(\"track_2_uri\", trackData[1].uri);\r",
+                  "pm.environment.set(\"track_3_uri\", trackData[2].uri);\r",
+                  "\r",
+                  "pm.environment.set(\"track_1_id\", trackData[0].id);\r",
+                  "pm.environment.set(\"track_2_id\", trackData[1].id);\r",
+                  "pm.environment.set(\"track_3_id\", trackData[2].id);\r",
+                  "\r",
+                  "// For bulk add\r",
+                  "pm.environment.set(\r",
+                  "    \"track_uris\",\r",
+                  "    JSON.stringify(trackData.map(t => t.uri))\r",
+                  ");\r",
+                  "\r",
+                  "pm.test(\"Response time < 1000ms\", () => {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/search?q={{search_query}}&type=track&limit=5",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "{{search_query}}"
+                },
+                {
+                  "key": "type",
+                  "value": "track"
+                },
+                {
+                  "key": "limit",
+                  "value": "5"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "playlist lifecycle",
+      "item": [
+        {
+          "name": "Create Playlist",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 201 - Playlist created\", () => {\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Playlist object structure valid\", () => {\r",
+                  "    pm.expect(json).to.have.property(\"id\");\r",
+                  "    pm.expect(json).to.have.property(\"name\");\r",
+                  "    pm.expect(json).to.have.property(\"snapshot_id\");\r",
+                  "    pm.expect(json.id).to.be.a(\"string\").and.not.empty;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Playlist name matches request\", () => {\r",
+                  "    pm.expect(json.name).to.eql(pm.environment.get(\"playlist_name\"));\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Playlist owned by current user\", () => {\r",
+                  "    pm.expect(json.owner.id).to.eql(pm.environment.get(\"user_id\"));\r",
+                  "});\r",
+                  "\r",
+                  "// Store critical state\r",
+                  "pm.environment.set(\"playlist_id\", json.id);\r",
+                  "pm.environment.set(\"snapshot_id\", json.snapshot_id);\r",
+                  "\r",
+                  "// Guard for downstream requests\r",
+                  "if (!json.id || !json.snapshot_id) {\r",
+                  "    throw new Error(\"Playlist creation failed. Execution halted.\");\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const timestamp = Date.now();\r",
+                  "const playlistName = \"API_Test_Playlist_\" + timestamp;\r",
+                  "\r",
+                  "pm.environment.set(\"playlist_name\", playlistName);\r",
+                  "\r",
+                  "// Defensive check\r",
+                  "if (!pm.environment.get(\"user_id\")) {\r",
+                  "    throw new Error(\"user_id missing. Pre-setup not executed.\");\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"{{playlist_name}}\",\r\n  \"description\": \"Automated API testing playlist\",\r\n  \"public\": false\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/me/playlists",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "me",
+                "playlists"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Items",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 201 - Items added\", () => {\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "});\r",
+                  "\r",
+                  "const oldSnapshot = pm.environment.get(\"snapshot_id\");\r",
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"snapshot_id returned\", () => {\r",
+                  "    pm.expect(json.snapshot_id).to.be.a(\"string\").and.not.empty;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Snapshot changed after add\", () => {\r",
+                  "    pm.expect(json.snapshot_id).to.not.eql(oldSnapshot);\r",
+                  "});\r",
+                  "\r",
+                  "// Store updated snapshot\r",
+                  "pm.environment.set(\"snapshot_id\", json.snapshot_id);\r",
+                  "\r",
+                  "// Hard stop if state invalid\r",
+                  "if (!json.snapshot_id) {\r",
+                  "    throw new Error(\"Add items failed. snapshot_id missing.\");\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "if (!pm.environment.get(\"playlist_id\")) {\r",
+                  "    throw new Error(\"playlist_id missing. Create Playlist not executed.\");\r",
+                  "}\r",
+                  "\r",
+                  "if (!pm.environment.get(\"track_uris\")) {\r",
+                  "    throw new Error(\"track_uris missing. Search Tracks not executed.\");\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"uris\": {{track_uris}}\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/playlists/{{playlist_id}}/items",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "playlists",
+                "{{playlist_id}}",
+                "items"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Added items verification",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Response contains items array\", function () {\r",
+                  "    pm.expect(json).to.have.property(\"items\");\r",
+                  "    pm.expect(json.items).to.be.an(\"array\");\r",
+                  "});\r",
+                  "\r",
+                  "// Extract track IDs from correct property (item.id)\r",
+                  "const playlistTrackIds = [];\r",
+                  "\r",
+                  "json.items.forEach(entry => {\r",
+                  "    if (entry && entry.item && entry.item.id) {\r",
+                  "        playlistTrackIds.push(entry.item.id);\r",
+                  "    }\r",
+                  "});\r",
+                  "\r",
+                  "// Parse what we originally added\r",
+                  "const addedUris = JSON.parse(pm.environment.get(\"track_uris\") || \"[]\");\r",
+                  "const addedTrackIds = addedUris.map(uri => uri.split(\":\")[2]);\r",
+                  "\r",
+                  "// Validate count\r",
+                  "pm.test(\"Playlist contains at least added number of tracks\", function () {\r",
+                  "    pm.expect(playlistTrackIds.length).to.be.at.least(addedTrackIds.length);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate presence\r",
+                  "addedTrackIds.forEach(id => {\r",
+                  "    pm.test(`Track ${id} exists in playlist`, function () {\r",
+                  "        pm.expect(playlistTrackIds).to.include(id);\r",
+                  "    });\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "if (!pm.environment.get(\"playlist_id\")) {\r",
+                  "    throw new Error(\"playlist_id missing. Create step not executed.\");\r",
+                  "}\r",
+                  "\r",
+                  "if (!pm.environment.get(\"track_uris\")) {\r",
+                  "    throw new Error(\"track_uris missing. Add step not executed.\");\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/playlists/{{playlist_id}}/items?market=from_token",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "playlists",
+                "{{playlist_id}}",
+                "items"
+              ],
+              "query": [
+                {
+                  "key": "market",
+                  "value": "from_token"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Replace Items",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const oldSnapshot = pm.environment.get(\"snapshot_id\");\r",
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Snapshot returned\", function () {\r",
+                  "    pm.expect(json).to.have.property(\"snapshot_id\");\r",
+                  "    pm.expect(json.snapshot_id).to.be.a(\"string\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Snapshot changed after replace\", function () {\r",
+                  "    pm.expect(json.snapshot_id).to.not.eql(oldSnapshot);\r",
+                  "});\r",
+                  "\r",
+                  "// Update snapshot for future operations\r",
+                  "pm.environment.set(\"snapshot_id\", json.snapshot_id);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "if (!pm.environment.get(\"playlist_id\")) {\r",
+                  "    throw new Error(\"playlist_id missing.\");\r",
+                  "}\r",
+                  "\r",
+                  "if (!pm.environment.get(\"track_1_uri\")) {\r",
+                  "    throw new Error(\"Search step not executed.\");\r",
+                  "}\r",
+                  "\r",
+                  "// Use only 2 tracks for replacement (controlled)\r",
+                  "const replaceUris = [\r",
+                  "    pm.environment.get(\"track_1_uri\"),\r",
+                  "    pm.environment.get(\"track_2_uri\")\r",
+                  "];\r",
+                  "\r",
+                  "pm.environment.set(\"replace_uris\", JSON.stringify(replaceUris));"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"uris\": {{replace_uris}}\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/playlists/{{playlist_id}}/items",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "playlists",
+                "{{playlist_id}}",
+                "items"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "verify replace item",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "// Extract playlist track IDs from correct structure\r",
+                  "const playlistTrackIds = [];\r",
+                  "\r",
+                  "json.items.forEach(entry => {\r",
+                  "    if (entry && entry.item && entry.item.id) {\r",
+                  "        playlistTrackIds.push(entry.item.id);\r",
+                  "    }\r",
+                  "});\r",
+                  "\r",
+                  "// Parse expected replacement IDs\r",
+                  "const replaceUris = JSON.parse(pm.environment.get(\"replace_uris\"));\r",
+                  "const expectedIds = replaceUris.map(uri => uri.split(\":\")[2]);\r",
+                  "\r",
+                  "// 1️⃣ Validate exact count\r",
+                  "pm.test(\"Playlist contains exactly replacement count\", function () {\r",
+                  "    pm.expect(playlistTrackIds.length).to.eql(expectedIds.length);\r",
+                  "});\r",
+                  "\r",
+                  "// 2️⃣ Validate each replacement track exists\r",
+                  "expectedIds.forEach(id => {\r",
+                  "    pm.test(`Replacement track ${id} exists`, function () {\r",
+                  "        pm.expect(playlistTrackIds).to.include(id);\r",
+                  "    });\r",
+                  "});\r",
+                  "\r",
+                  "// 3️⃣ Validate old tracks removed\r",
+                  "const originalUris = JSON.parse(pm.environment.get(\"track_uris\"));\r",
+                  "const originalIds = originalUris.map(uri => uri.split(\":\")[2]);\r",
+                  "\r",
+                  "originalIds.forEach(id => {\r",
+                  "    if (!expectedIds.includes(id)) {\r",
+                  "        pm.test(`Old track ${id} removed`, function () {\r",
+                  "            pm.expect(playlistTrackIds).to.not.include(id);\r",
+                  "        });\r",
+                  "    }\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "if (!pm.environment.get(\"replace_uris\")) {\r",
+                  "    throw new Error(\"Replace step not executed.\");\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/playlists/{{playlist_id}}/items?market=from_token",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "playlists",
+                "{{playlist_id}}",
+                "items"
+              ],
+              "query": [
+                {
+                  "key": "market",
+                  "value": "from_token",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "remove track from playlist",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const oldSnapshot = pm.environment.get(\"snapshot_id\");\r",
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Snapshot returned\", function () {\r",
+                  "    pm.expect(json).to.have.property(\"snapshot_id\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Snapshot changed after delete\", function () {\r",
+                  "    pm.expect(json.snapshot_id).to.not.eql(oldSnapshot);\r",
+                  "});\r",
+                  "\r",
+                  "// Update snapshot for further chaining\r",
+                  "pm.environment.set(\"snapshot_id\", json.snapshot_id);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "if (!pm.environment.get(\"playlist_id\")) {\r",
+                  "    throw new Error(\"playlist_id missing.\");\r",
+                  "}\r",
+                  "\r",
+                  "if (!pm.environment.get(\"snapshot_id\")) {\r",
+                  "    throw new Error(\"snapshot_id missing.\");\r",
+                  "}\r",
+                  "\r",
+                  "if (!pm.environment.get(\"track_1_uri\")) {\r",
+                  "    throw new Error(\"track_1_uri missing.\");\r",
+                  "}\r",
+                  "\r",
+                  "const removePayload = {\r",
+                  "    items: [\r",
+                  "        { uri: pm.environment.get(\"track_1_uri\") }\r",
+                  "    ],\r",
+                  "    snapshot_id: pm.environment.get(\"snapshot_id\")\r",
+                  "};\r",
+                  "\r",
+                  "pm.request.body.raw = JSON.stringify(removePayload);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{{remove_body}}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/playlists/{{playlist_id}}/items",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "playlists",
+                "{{playlist_id}}",
+                "items"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify Deletion",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "if (!pm.environment.get(\"playlist_id\")) {\r",
+                  "    throw new Error(\"playlist_id missing.\");\r",
+                  "}\r",
+                  "\r",
+                  "if (!pm.environment.get(\"track_1_uri\")) {\r",
+                  "    throw new Error(\"track_1_uri missing.\");\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "// Extract track IDs safely (new API structure uses item.id)\r",
+                  "const playlistTrackIds = [];\r",
+                  "\r",
+                  "json.items.forEach(entry => {\r",
+                  "    if (entry && entry.item && entry.item.id) {\r",
+                  "        playlistTrackIds.push(entry.item.id);\r",
+                  "    }\r",
+                  "});\r",
+                  "\r",
+                  "// Convert URIs to IDs\r",
+                  "const removedId = pm.environment.get(\"track_1_uri\").split(\":\")[2];\r",
+                  "const remainingId = pm.environment.get(\"track_2_uri\").split(\":\")[2];\r",
+                  "\r",
+                  "// 1️⃣ Deleted track should NOT exist\r",
+                  "pm.test(`Deleted track ${removedId} is removed`, function () {\r",
+                  "    pm.expect(playlistTrackIds).to.not.include(removedId);\r",
+                  "});\r",
+                  "\r",
+                  "// 2️⃣ Remaining track should still exist\r",
+                  "pm.test(`Remaining track ${remainingId} still exists`, function () {\r",
+                  "    pm.expect(playlistTrackIds).to.include(remainingId);\r",
+                  "});\r",
+                  "\r",
+                  "// 3️⃣ Count reduced correctly (should now be 1)\r",
+                  "pm.test(\"Playlist contains exactly 1 track after deletion\", function () {\r",
+                  "    pm.expect(playlistTrackIds.length).to.eql(1);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/playlists/{{playlist_id}}/items?market=from_token",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "playlists",
+                "{{playlist_id}}",
+                "items"
+              ],
+              "query": [
+                {
+                  "key": "market",
+                  "value": "from_token",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Change Playlist details",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "if (!pm.environment.get(\"playlist_id\")) {\r",
+                  "    throw new Error(\"playlist_id missing.\");\r",
+                  "}\r",
+                  "\r",
+                  "const updatedName = \"UPDATED_API_Playlist_\" + Date.now();\r",
+                  "const updatedDescription = \"Updated via automated test\";\r",
+                  "\r",
+                  "pm.environment.set(\"updated_name\", updatedName);\r",
+                  "pm.environment.set(\"updated_description\", updatedDescription);\r",
+                  "\r",
+                  "const body = {\r",
+                  "    name: updatedName,\r",
+                  "    description: updatedDescription,\r",
+                  "    public: false\r",
+                  "};\r",
+                  "\r",
+                  "pm.request.body.raw = JSON.stringify(body);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "// No snapshot returned for this endpoint"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{{update_body}}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/playlists/{{playlist_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "playlists",
+                "{{playlist_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify details updated",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Playlist name updated\", function () {\r",
+                  "    pm.expect(json.name).to.eql(pm.environment.get(\"updated_name\"));\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Playlist description updated\", function () {\r",
+                  "    pm.expect(json.description).to.eql(pm.environment.get(\"updated_description\"));\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Playlist visibility field exists\", function () {\r",
+                  "    pm.expect(json).to.have.property(\"public\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.environment.set(\"expected_public\", false);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/playlists/{{playlist_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "playlists",
+                "{{playlist_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Negative & Edge Cases",
+      "item": [
+        {
+          "name": "Invalid Token",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.environment.set(\"original_token\", pm.environment.get(\"access_token\"));\r",
+                  "pm.environment.set(\"access_token\", \"invalid_token_123\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status is 401\", function () {\r",
+                  "    pm.response.to.have.status(401);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Error object exists\", function () {\r",
+                  "    pm.expect(json).to.have.property(\"error\");\r",
+                  "    pm.expect(json.error.status).to.eql(401);\r",
+                  "});\r",
+                  "\r",
+                  "// Restore token\r",
+                  "pm.environment.set(\"access_token\", pm.environment.get(\"original_token\"));"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Modify Non-Owned Playlist",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status is 403\", function () {\r",
+                  "    pm.response.to.have.status(403);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Error structure valid\", function () {\r",
+                  "    pm.expect(json).to.have.property(\"error\");\r",
+                  "    pm.expect(json.error.status).to.eql(403);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Unauthorized Change\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/playlists/37i9dQZF1DXcBWIGoYBM5M",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "playlists",
+                "37i9dQZF1DXcBWIGoYBM5M"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Invalid Playlist ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const expectedStatus = 400;\r",
+                  "\r",
+                  "pm.test(`Status is ${expectedStatus}`, function () {\r",
+                  "    pm.response.to.have.status(expectedStatus);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Error structure valid\", function () {\r",
+                  "    pm.expect(json).to.have.property(\"error\");\r",
+                  "    pm.expect(json.error.status).to.eql(expectedStatus);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/playlists/invalid123/items?market=from_token",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "playlists",
+                "invalid123",
+                "items"
+              ],
+              "query": [
+                {
+                  "key": "market",
+                  "value": "from_token"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Invalid Track URI",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status is 400\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Error structure valid\", function () {\r",
+                  "    pm.expect(json).to.have.property(\"error\");\r",
+                  "    pm.expect(json.error.status).to.eql(400);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"uris\": [\"spotify:track:invalidtrackid123\"]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/playlists/{{playlist_id}}/items",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "playlists",
+                "{{playlist_id}}",
+                "items"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Empty Body",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status is 400\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Error structure valid\", function () {\r",
+                  "    pm.expect(json).to.have.property(\"error\");\r",
+                  "    pm.expect(json.error.status).to.eql(400);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/playlists/{{playlist_id}}/items",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "playlists",
+                "{{playlist_id}}",
+                "items"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "cleanup",
+      "item": [
+        {
+          "name": "unfollow the playlist",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "if (!pm.environment.get(\"playlist_id\")) {\r",
+                  "    throw new Error(\"playlist_id missing. Nothing to clean.\");\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/playlists/{{playlist_id}}/followers",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "playlists",
+                "{{playlist_id}}",
+                "followers"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "reset runtime variables",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const runtimeVars = [\r",
+                  "    \"user_id\",\r",
+                  "    \"user_display_name\",\r",
+                  "    \"playlist_id\",\r",
+                  "    \"playlist_name\",\r",
+                  "    \"snapshot_id\",\r",
+                  "    \"search_query\",\r",
+                  "    \"track_data\",\r",
+                  "    \"track_1_uri\",\r",
+                  "    \"track_2_uri\",\r",
+                  "    \"track_3_uri\",\r",
+                  "    \"track_1_id\",\r",
+                  "    \"track_2_id\",\r",
+                  "    \"track_3_id\",\r",
+                  "    \"track_uris\",\r",
+                  "    \"replace_uris\",\r",
+                  "    \"remove_body\",\r",
+                  "    \"updated_name\",\r",
+                  "    \"updated_description\",\r",
+                  "    \"update_body\",\r",
+                  "    \"expected_public\",\r",
+                  "    \"original_token\",\r",
+                  "    \"conflict_snapshot\",\r",
+                  "    \"conflict_body\"\r",
+                  "];\r",
+                  "\r",
+                  "runtimeVars.forEach(v => pm.environment.unset(v));\r",
+                  "\r",
+                  "console.log(\"Runtime variables cleared.\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://postman-echo.com/get",
+              "protocol": "https",
+              "host": [
+                "postman-echo",
+                "com"
+              ],
+              "path": [
+                "get"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{access_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          "let expiry = pm.environment.get(\"token_expiry\");\r",
+          "let currentTime = new Date().getTime();\r",
+          "\r",
+          "if (!expiry || currentTime > expiry) {\r",
+          "    console.log(\"Token expired or missing. Refreshing...\");\r",
+          "    pm.sendRequest({\r",
+          "        url: \"https://accounts.spotify.com/api/token\",\r",
+          "        method: \"POST\",\r",
+          "        header: {\r",
+          "            \"Content-Type\": \"application/x-www-form-urlencoded\"\r",
+          "        },\r",
+          "        body: {\r",
+          "            mode: \"urlencoded\",\r",
+          "            urlencoded: [\r",
+          "                { key: \"grant_type\", value: \"refresh_token\" },\r",
+          "                { key: \"refresh_token\", value: pm.environment.get(\"refresh_token\") }\r",
+          "            ]\r",
+          "        },\r",
+          "        auth: {\r",
+          "            type: \"basic\",\r",
+          "            basic: [\r",
+          "                { key: \"username\", value: pm.environment.get(\"client_id\") },\r",
+          "                { key: \"password\", value: pm.environment.get(\"client_secret\") }\r",
+          "            ]\r",
+          "        }\r",
+          "    }, function (err, res) {\r",
+          "        let json = res.json();\r",
+          "        pm.environment.set(\"access_token\", json.access_token);\r",
+          "        let newExpiry = new Date().getTime() + (json.expires_in * 1000);\r",
+          "        pm.environment.set(\"token_expiry\", newExpiry);\r",
+          "    });\r",
+          "}\r",
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ]
+}
