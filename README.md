@@ -70,17 +70,25 @@ base_url = https://api.spotify.com/v1
 
 ## 🎥 Demo
 
-[Watch Demo](assets/demo.mp4)
+[![Watch Demo](https://img.youtube.com/vi/Nv_zg4JJyE0/0.jpg)](https://youtu.be/Nv_zg4JJyE0)
 
 ---
 
 ## 📂 Project Structure
 
-collection/ → Postman collection
-environment/ → Environment variables
-assets/ → Demo + screenshots
-README.md
-
+spotify-api-testing/
+│
+├── collection/
+│   └── spotify.postman_collection.json
+│
+├── environment/
+│   └── spotify.postman_environment.json
+│
+├── assets/
+│   ├── demo.mp4
+│   ├── demo-thumbnail.png
+│
+└── README.md
 
 ---
 
