@@ -75,7 +75,7 @@ base_url = https://api.spotify.com/v1
 ---
 
 ## 📂 Project Structure
-###
+```
 spotify-api-testing/
 │
 ├── collection/
@@ -89,7 +89,7 @@ spotify-api-testing/
 │   ├── demo-thumbnail.png
 │
 └── README.md
-###
+```
 ---
 
 ## ⚠️ Notes
